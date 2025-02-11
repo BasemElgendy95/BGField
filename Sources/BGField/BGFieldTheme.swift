@@ -11,10 +11,10 @@ import SwiftUI
 
 /// Represents the overall theme for `BGField`, including border, text, corner radius, and background color.
 public struct BGFieldTheme: Sendable {
-    var border: BGFieldBorderTheme
-    var text: BGFieldTextTheme
-    var cornerRadius: CGFloat
-    var backgroundColor: Color
+    public var border: BGFieldBorderTheme
+    public var text: BGFieldTextTheme
+    public var cornerRadius: CGFloat
+    public var backgroundColor: Color
 
     /// The default theme applied to `BGField`.
     static let `default` = BGFieldTheme(
@@ -23,7 +23,7 @@ public struct BGFieldTheme: Sendable {
         cornerRadius: 0,
         backgroundColor: .clear
     )
-    init(border: BGFieldBorderTheme, text: BGFieldTextTheme, cornerRadius: CGFloat, backgroundColor: Color) {
+    public init(border: BGFieldBorderTheme, text: BGFieldTextTheme, cornerRadius: CGFloat, backgroundColor: Color) {
         self.border = border
         self.text = text
         self.cornerRadius = cornerRadius
@@ -33,11 +33,11 @@ public struct BGFieldTheme: Sendable {
 
 /// Defines text styling within a `BGField`, including colors and font.
 public struct BGFieldTextTheme: Sendable {
-    var idleColor: Color
-    var activeColor: Color
-    var errorColor: Color
-    var placeholderColor: Color
-    var font: Font
+    public var idleColor: Color
+    public var activeColor: Color
+    public var errorColor: Color
+    public var placeholderColor: Color
+    public var font: Font
 
     /// The default text theme for `BGField`.
     public static let `default` = BGFieldTextTheme(
@@ -48,7 +48,7 @@ public struct BGFieldTextTheme: Sendable {
         font: .body
     )
     
-    init(idleColor: Color, activeColor: Color, errorColor: Color, placeholderColor: Color, font: Font) {
+    public init(idleColor: Color, activeColor: Color, errorColor: Color, placeholderColor: Color, font: Font) {
         self.idleColor = idleColor
         self.activeColor = activeColor
         self.errorColor = errorColor
@@ -59,11 +59,11 @@ public struct BGFieldTextTheme: Sendable {
 
 /// Defines border styling for `BGField`, including color states and width.
 public struct BGFieldBorderTheme: Sendable {
-    var idleColor: Color
-    var activeColor: Color
-    var validColor: Color
-    var errorColor: Color
-    var width: CGFloat
+    public var idleColor: Color
+    public var activeColor: Color
+    public var validColor: Color
+    public var errorColor: Color
+    public var width: CGFloat
 
     /// The default border theme for `BGField`.
     public static let `default` = BGFieldBorderTheme(
@@ -74,7 +74,7 @@ public struct BGFieldBorderTheme: Sendable {
         width: 0
     )
     
-    init(idleColor: Color, activeColor: Color, validColor: Color, errorColor: Color, width: CGFloat) {
+    public init(idleColor: Color, activeColor: Color, validColor: Color, errorColor: Color, width: CGFloat) {
         self.idleColor = idleColor
         self.activeColor = activeColor
         self.validColor = validColor
