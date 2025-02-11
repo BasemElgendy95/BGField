@@ -23,6 +23,12 @@ public struct BGFieldTheme: Sendable {
         cornerRadius: 0,
         backgroundColor: .clear
     )
+    init(border: BGFieldBorderTheme, text: BGFieldTextTheme, cornerRadius: CGFloat, backgroundColor: Color) {
+        self.border = border
+        self.text = text
+        self.cornerRadius = cornerRadius
+        self.backgroundColor = backgroundColor
+    }
 }
 
 /// Defines text styling within a `BGField`, including colors and font.
@@ -41,6 +47,14 @@ public struct BGFieldTextTheme: Sendable {
         placeholderColor: .gray,
         font: .body
     )
+    
+    init(idleColor: Color, activeColor: Color, errorColor: Color, placeholderColor: Color, font: Font) {
+        self.idleColor = idleColor
+        self.activeColor = activeColor
+        self.errorColor = errorColor
+        self.placeholderColor = placeholderColor
+        self.font = font
+    }
 }
 
 /// Defines border styling for `BGField`, including color states and width.
@@ -59,4 +73,12 @@ public struct BGFieldBorderTheme: Sendable {
         errorColor: .red,
         width: 0
     )
+    
+    init(idleColor: Color, activeColor: Color, validColor: Color, errorColor: Color, width: CGFloat) {
+        self.idleColor = idleColor
+        self.activeColor = activeColor
+        self.validColor = validColor
+        self.errorColor = errorColor
+        self.width = width
+    }
 }
