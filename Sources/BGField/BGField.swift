@@ -10,31 +10,31 @@ import SwiftUI
 /// A configurable text field view supporting multiple field types like password, multiline text, etc.
 public struct BGField: View {
     
-    private var customConfig: BGFieldConfig?
     @Binding private var text: String
     @Binding private var fieldState: BGFieldState
     @FocusState private var focusedField: BGFieldType?
     @State private var isPasswordVisible = false
+    
+    private var customConfig: BGFieldConfig?
     private let fieldType: BGFieldType
     private let placeholder: String
     private let isRequired: Bool
     private let characterLimit: Int?
     private let isMultiline: Bool
+    private let validator: ((String) -> BGFieldState)?
     
-    /// Fetches the configuration from the theme manager unless overridden.
-        private var config: BGFieldConfig {
-            customConfig ?? BGFieldThemeManager.shared.theme.toConfig()
+    private var config: BGFieldConfig {
+        customConfig ?? BGFieldThemeManager.shared.theme.toConfig()
+    }
+    
+    private var borderColor: Color {
+        switch fieldState {
+        case .idle: return config.border.idleColor
+        case .valid: return config.border.validColor
+        case .invalid: return config.border.errorColor
+        default: return config.border.activeColor
         }
-    
-    /// Initializes a new `BGField`.
-    /// - Parameters:
-    ///   - text: A binding to the text input.
-    ///   - fieldState: A binding to the field state.
-    ///   - fieldType: The type of the field (e.g., `.password`, `.email`).
-    ///   - placeholder: Placeholder text displayed when the field is empty.
-    ///   - isRequired: Boolean indicating if the field is required.
-    ///   - characterLimit: Optional limit for the maximum number of characters.
-    ///   - isMultiline: Boolean indicating if the field should support multiline text.
+    }
     public init(
         text: Binding<String>,
         fieldState: Binding<BGFieldState>,
@@ -43,8 +43,8 @@ public struct BGField: View {
         isRequired: Bool = false,
         characterLimit: Int? = nil,
         isMultiline: Bool = false,
-        config: BGFieldConfig? = nil // Allow optional custom config
-
+        config: BGFieldConfig? = nil,
+        validator: ((String) -> BGFieldState)? = nil
     ) {
         self._text = text
         self._fieldState = fieldState
@@ -54,17 +54,13 @@ public struct BGField: View {
         self.characterLimit = characterLimit
         self.isMultiline = isMultiline
         self.customConfig = config
+        self.validator = validator
     }
 
-    
     public var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            HStack(spacing: 5) {
-                fieldView()
-                if fieldType == .password {
-                    togglePasswordVisibilityButton
-                }
-            }
+            fieldView()
+                .focused($focusedField, equals: fieldType)
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: config.cornerRadius)
@@ -80,14 +76,17 @@ public struct BGField: View {
                 errorText(errorMessage: errorMessage)
             }
 
-            if let limit = characterLimit {
-                limitText(limit: limit)
-            }
+        
         }
-        .onChange(of: focusedField) {
+        .onChange(of: focusedField) { _ in
             if focusedField == nil { validate() }
         }
-        
+        .onChange(of: text) { updateText($0) }
+        .onSubmit { validate() }
+        .environment(
+            \EnvironmentValues.layoutDirection,
+            Locale.current.languageCode == "ar" ? .rightToLeft : .leftToRight
+        )
     }
 }
 
@@ -96,69 +95,25 @@ public struct BGField: View {
 private extension BGField {
     @ViewBuilder
     func fieldView() -> some View {
-        if isMultiline {
-            multilineFieldView
-        } else if fieldType == .password && !isPasswordVisible {
-            passwordFieldView
-        } else {
-            normalFieldView
+        switch fieldType {
+        case .multilineText:
+            BGMultilineTextField(text: $text, placeholder: placeholder, characterLimit: characterLimit, config: config)
+        case .password:
+            BGPasswordField(text: $text, placeholder: placeholder)
+        case .name:
+            BGNameField(text: $text, placeholder: placeholder)
+        case .email:
+            BGEmailField(text: $text, placeholder: placeholder)
+        case .date:
+            BGDateField(text: $text, placeholder: placeholder, onSubmit: {
+                validate()
+            })
+        case .number:
+            BGNumberField(text: $text, placeholder: placeholder)
+        default:
+            BGNameField(text: $text, placeholder: placeholder)
         }
-    }
-
-    var multilineFieldView: some View {
-        TextField("", text: $text, prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
-            .lineLimit(1...8)
-            .focused($focusedField, equals: .multilineText)
-            .onChange(of: text){ updateText(text)}
-            .onSubmit { validate() }
-    }
-
-    var passwordFieldView: some View {
-        Group {
-            if isPasswordVisible {
-                TextField("", text: $text, prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
-            } else {
-                SecureField("", text: $text, prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
-            }
-        }
-        .focused($focusedField, equals: .password)
-        .onChange(of: text){ updateText(text)}
-        .onSubmit { validate() }
-    }
-
-    var normalFieldView: some View {
-        TextField("", text: $text, prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
-            .focused($focusedField, equals: fieldType)
-            .onChange(of: text){ updateText(text)}
-            .onSubmit { validate() }
-    }
-
-    var togglePasswordVisibilityButton: some View {
-        Button(action: { isPasswordVisible.toggle() }) {
-            Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                .foregroundColor(.gray)
-                .accessibilityLabel(isPasswordVisible ? "Hide password" : "Show password")
-        }
-    }
-}
-
-// MARK: - Error and Limit Text Extensions
-
-private extension BGField {
-    @ViewBuilder
-    func errorText(errorMessage: String) -> some View {
-        Text(errorMessage)
-            .foregroundColor(config.text.errorColor)
-            .font(.caption)
-            .transition(.opacity)
-            .animation(.easeInOut(duration: 0.3), value: fieldState)
-    }
-
-    @ViewBuilder
-    func limitText(limit: Int) -> some View {
-        Text("\(text.count)/\(limit)")
-            .font(.caption)
-            .foregroundColor(.gray)
+        
     }
 }
 
@@ -174,33 +129,23 @@ private extension BGField {
     }
 
     func validate() {
-        if let validator = BGFieldValidator.defaultValidators[fieldType] {
-            withAnimation {
-                fieldState = validator(text, isRequired)
-            }
+        if let customValidator = validator {
+            withAnimation { fieldState = customValidator(text) }
+        } else if let defaultValidator = BGFieldValidator.defaultValidators[fieldType] {
+            withAnimation { fieldState = defaultValidator(text, isRequired) }
         }
     }
-
-    var borderColor: Color {
-        switch fieldState {
-        case .idle: return config.border.idleColor
-        case .valid: return config.border.validColor
-        case .invalid: return config.border.errorColor
-        default: return config.border.activeColor
-        }
-    }
-    
 }
-// MARK: - BGFieldTheme Extension
 
-public extension BGFieldTheme {
-    /// Converts a theme to a `BGFieldConfig` for field usage.
-    func toConfig() -> BGFieldConfig {
-        BGFieldConfig(
-            border: self.border,
-            text: self.text,
-            cornerRadius: self.cornerRadius,
-            backgroundColor: self.backgroundColor
-        )
+// MARK: - Error
+
+private extension BGField {
+    @ViewBuilder
+    func errorText(errorMessage: String) -> some View {
+        Text(errorMessage)
+            .foregroundColor(config.text.errorColor)
+            .font(.caption)
+            .transition(.opacity)
+            .animation(.easeInOut(duration: 0.3), value: fieldState)
     }
 }

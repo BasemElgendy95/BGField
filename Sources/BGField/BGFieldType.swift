@@ -17,7 +17,6 @@ public enum BGFieldType: Hashable, CaseIterable {
     case phone          // Field type for phone numbers.
     case name           // Field type for names.
     case username       // Field type for usernames.
-    case address        // Field type for addresses.
     case date           // Field type for date inputs.
     case number         // Field type for numerical inputs.
     case url            // Field type for URLs.
@@ -31,7 +30,6 @@ public enum BGFieldType: Hashable, CaseIterable {
         case .phone: return "Phone Number"
         case .name: return "Full Name"
         case .username: return "Username"
-        case .address: return "Address"
         case .date: return "Date"
         case .number: return "Number"
         case .url: return "Website URL"
