@@ -8,7 +8,9 @@
 import SwiftUI
 
 /// A configurable text field view supporting multiple field types like password, multiline text, etc.
-public struct BGField: BGfielded {
+public struct BGField: View {
+    
+    private var customConfig: BGFieldConfig?
     @Binding private var text: String
     @Binding private var fieldState: BGFieldState
     @FocusState private var focusedField: BGFieldType?
@@ -19,10 +21,11 @@ public struct BGField: BGfielded {
     private let characterLimit: Int?
     private let isMultiline: Bool
     
-    private var config: BGFieldConfig {
-        return configure(.init(border: .default, text: .default, cornerRadius: 10, backgroundColor: .accentColor))
-    }
-
+    /// Fetches the configuration from the theme manager unless overridden.
+        private var config: BGFieldConfig {
+            customConfig ?? BGFieldThemeManager.manager.theme.toConfig()
+        }
+    
     /// Initializes a new `BGField`.
     /// - Parameters:
     ///   - text: A binding to the text input.
@@ -39,7 +42,9 @@ public struct BGField: BGfielded {
         placeholder: String,
         isRequired: Bool = false,
         characterLimit: Int? = nil,
-        isMultiline: Bool = false
+        isMultiline: Bool = false,
+        config: BGFieldConfig? = nil // Allow optional custom config
+
     ) {
         self._text = text
         self._fieldState = fieldState
@@ -48,8 +53,10 @@ public struct BGField: BGfielded {
         self.isRequired = isRequired
         self.characterLimit = characterLimit
         self.isMultiline = isMultiline
+        self.customConfig = config
     }
 
+    
     public var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(spacing: 5) {
@@ -181,5 +188,19 @@ private extension BGField {
         case .invalid: return config.border.errorColor
         default: return config.border.activeColor
         }
+    }
+    
+}
+// MARK: - BGFieldTheme Extension
+
+public extension BGFieldTheme {
+    /// Converts a theme to a `BGFieldConfig` for field usage.
+    func toConfig() -> BGFieldConfig {
+        BGFieldConfig(
+            border: self.border,
+            text: self.text,
+            cornerRadius: self.cornerRadius,
+            backgroundColor: self.backgroundColor
+        )
     }
 }

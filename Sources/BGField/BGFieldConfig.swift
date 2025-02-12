@@ -12,10 +12,10 @@ import SwiftUI
 
 /// A configuration object for customizing the appearance and behavior of `BGField`.
 public struct BGFieldConfig: Configurable {
-    private(set) var border: BGFieldBorderTheme
-    private(set) var text: BGFieldTextTheme
-    private(set) var cornerRadius: CGFloat
-    private(set) var backgroundColor: Color
+    private(set) var border: BGFieldBorderTheme = .default
+    private(set) var text: BGFieldTextTheme = .default
+    private(set) var cornerRadius: CGFloat = 0
+    private(set) var backgroundColor: Color = .white
 }
 
 public extension BGFieldConfig {
