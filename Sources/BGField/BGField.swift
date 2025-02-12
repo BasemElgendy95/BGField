@@ -23,7 +23,7 @@ public struct BGField: View {
     
     /// Fetches the configuration from the theme manager unless overridden.
         private var config: BGFieldConfig {
-            customConfig ?? BGFieldThemeManager.manager.theme.toConfig()
+            customConfig ?? BGFieldThemeManager.shared.theme.toConfig()
         }
     
     /// Initializes a new `BGField`.

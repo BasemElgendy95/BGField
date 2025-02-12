@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Manages the global theme for BGField components.
 public class BGFieldThemeManager: ObservableObject {
-    @MainActor public static let manager = BGFieldThemeManager()
+    @MainActor public static let shared = BGFieldThemeManager()
     
     @Published public var theme: BGFieldTheme = .default
     

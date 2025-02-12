@@ -20,8 +20,8 @@ public struct BGFieldTheme: Sendable {
     static let `default` = BGFieldTheme(
         border: .default,
         text: .default,
-        cornerRadius: 0,
-        backgroundColor: .clear
+        cornerRadius: 10,
+        backgroundColor: .white
     )
     public init(border: BGFieldBorderTheme, text: BGFieldTextTheme, cornerRadius: CGFloat, backgroundColor: Color) {
         self.border = border
@@ -71,7 +71,7 @@ public struct BGFieldBorderTheme: Sendable {
         activeColor: .black,
         validColor: .green,
         errorColor: .red,
-        width: 0
+        width: 1
     )
     
     public init(idleColor: Color, activeColor: Color, validColor: Color, errorColor: Color, width: CGFloat) {
