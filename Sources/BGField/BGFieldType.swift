@@ -15,6 +15,7 @@ public enum BGFieldType: Hashable, CaseIterable {
     case password       // Field type for passwords.
     case multilineText  // Field type for multi-line text inputs.
     case phone          // Field type for phone numbers.
+    case phoneWithCode  // Field type for phone numbers with country/region code.
     case name           // Field type for names.
     case username       // Field type for usernames.
     case date           // Field type for date inputs.
@@ -28,6 +29,7 @@ public enum BGFieldType: Hashable, CaseIterable {
         case .password: return "Password"
         case .multilineText: return "Multiline Text"
         case .phone: return "Phone Number"
+        case .phoneWithCode: return "Phone Number (with Code)"
         case .name: return "Full Name"
         case .username: return "Username"
         case .date: return "Date"
@@ -36,5 +38,4 @@ public enum BGFieldType: Hashable, CaseIterable {
         }
     }
 }
-
 

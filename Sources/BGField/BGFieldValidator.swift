@@ -13,6 +13,7 @@ public struct BGFieldValidator {
     @MainActor static let defaultValidators: [BGFieldType: @Sendable (String, Bool) -> BGFieldState] = [
         .email: { validateWithRegex($0, isRequired: $1, pattern: "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$", errorMessage: String(localized: "invalid_email", bundle: .module)) },
         .phone: { validateWithRegex($0, isRequired: $1, pattern: "^\\d{10}$", errorMessage: String(localized: "invalid_phone", bundle: .module)) },
+        .phoneWithCode: { validateWithRegex($0, isRequired: $1, pattern: "^\\d{10}$", errorMessage: String(localized: "invalid_phone", bundle: .module)) },
         .password: { validatePassword($0, isRequired: $1) },
         .name: { validateWithRegex($0, isRequired: $1, pattern: "^[A-Za-z ]{2,}$", errorMessage: String(localized: "name_too_short", bundle: .module)) },
         .username: { validateWithRegex($0, isRequired: $1, pattern: "^[a-zA-Z0-9_]{3,}$", errorMessage: String(localized: "invalid_username", bundle: .module)) },

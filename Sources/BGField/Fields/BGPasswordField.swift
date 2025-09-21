@@ -8,9 +8,15 @@
 import SwiftUI
 
 public struct BGPasswordField: View {
+    
     @Binding var text: String
-    var placeholder: String
+    
     @State private var isSecure = true
+    
+    var placeholder: String
+    
+    var config: BGFieldConfig
+    
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -18,9 +24,14 @@ public struct BGPasswordField: View {
             HStack {
                 Group {
                     if isSecure {
-                        TextField(placeholder, text: $text)
+                        TextField("",
+                                  text: $text,
+                                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+
                     } else {
-                        SecureField(placeholder, text: $text)
+                        SecureField("",
+                                    text: $text,
+                                    prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
                     }
                 }
                 Button(action: {

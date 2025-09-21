@@ -9,10 +9,15 @@ import SwiftUI
 
 public struct BGPhoneField: View {
     @Binding var text: String
+    
     var placeholder: String
-
+    
+    var config: BGFieldConfig
+    
     public var body: some View {
-        TextField(placeholder, text: $text)
-            .keyboardType(.phonePad)
+        TextField("",
+                  text: $text,
+                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+        .keyboardType(.phonePad)
     }
 }

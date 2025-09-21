@@ -23,9 +23,7 @@ public struct BGField: View {
     private let isMultiline: Bool
     private let validator: ((String) -> BGFieldState)?
     
-    private var config: BGFieldConfig {
-        customConfig ?? BGFieldThemeManager.shared.theme.toConfig()
-    }
+    private var config: BGFieldConfig =  BGFieldThemeManager.shared.theme.toConfig()
     
     private var borderColor: Color {
         switch fieldState {
@@ -51,7 +49,7 @@ public struct BGField: View {
         self.fieldType = fieldType
         self.placeholder = placeholder
         self.isRequired = isRequired
-        self.characterLimit = characterLimit
+        self.characterLimit = characterLimit ?? (fieldType == .phoneWithCode ? 10 : nil)
         self.isMultiline = isMultiline
         self.customConfig = config
         self.validator = validator
@@ -78,14 +76,14 @@ public struct BGField: View {
 
         
         }
-        .onChange(of: focusedField) { _ in
+        .onChange(of: focusedField) {
             if focusedField == nil { validate() }
         }
-        .onChange(of: text) { updateText($0) }
+        .onChange(of: text) { updateText(text) }
         .onSubmit { validate() }
         .environment(
             \EnvironmentValues.layoutDirection,
-            Locale.current.languageCode == "ar" ? .rightToLeft : .leftToRight
+             Locale.current.language.languageCode?.identifier == "ar" ? .rightToLeft : .leftToRight
         )
     }
 }
@@ -99,21 +97,31 @@ private extension BGField {
         case .multilineText:
             BGMultilineTextField(text: $text, placeholder: placeholder, characterLimit: characterLimit, config: config)
         case .password:
-            BGPasswordField(text: $text, placeholder: placeholder)
+            BGPasswordField(text: $text, placeholder: placeholder, config: config)
         case .name:
-            BGNameField(text: $text, placeholder: placeholder)
+            BGNameField(text: $text, placeholder: placeholder, config: config)
         case .email:
-            BGEmailField(text: $text, placeholder: placeholder)
+            BGEmailField(text: $text, placeholder: placeholder, config: config)
         case .date:
             BGDateField(text: $text, placeholder: placeholder, onSubmit: {
                 validate()
             })
         case .number:
-            BGNumberField(text: $text, placeholder: placeholder)
+            BGNumberField(text: $text, placeholder: placeholder, config: config)
+        case .phoneWithCode:
+            BGPhoneWithCodeField(text: $text, placeholder: placeholder, config: config)
         default:
-            BGNameField(text: $text, placeholder: placeholder)
+            BGNameField(text: $text, placeholder: placeholder, config: config)
         }
         
+    }
+}
+
+public extension BGField {
+    func setBackgroundColor(_ color: Color) -> Self{
+        let copy = self
+        _ = copy.config.backgroundColor(color)
+        return copy
     }
 }
 
@@ -125,6 +133,12 @@ private extension BGField {
         fieldState = .active
         if let limit = characterLimit, newValue.count > limit {
             text = String(newValue.prefix(limit))
+        }
+        
+        if fieldType == .phoneWithCode {
+            if text.starts(with: "0") {
+                text = String(newValue.dropFirst())
+            }
         }
     }
 
@@ -145,7 +159,9 @@ private extension BGField {
         Text(errorMessage)
             .foregroundColor(config.text.errorColor)
             .font(.caption)
+            .padding(.leading, 12)
             .transition(.opacity)
             .animation(.easeInOut(duration: 0.3), value: fieldState)
+            
     }
 }
