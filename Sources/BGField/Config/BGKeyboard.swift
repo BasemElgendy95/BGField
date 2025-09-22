@@ -8,8 +8,9 @@
 import SwiftUI
 
 /// A ViewModifier that dismisses the keyboard when the view is tapped.
-struct HideKeyboardOnTapModifier: ViewModifier {
-    func body(content: Content) -> some View {
+public struct HideKeyboardOnTapModifier: ViewModifier {
+    
+    public func body(content: Content) -> some View {
         content
             .onTapGesture {
                 UIApplication.shared.sendAction(
@@ -22,7 +23,7 @@ struct HideKeyboardOnTapModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Adds the ability to dismiss the keyboard when tapping on the view.
     func hideKeyboardOnTap() -> some View {
         self.modifier(HideKeyboardOnTapModifier())
