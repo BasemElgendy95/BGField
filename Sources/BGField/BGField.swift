@@ -17,7 +17,7 @@ public struct BGField: View {
     
     private var customConfig: BGFieldConfig?
     private let fieldType: BGFieldType
-    private let placeholder: String
+    private let placeholder: LocalizedStringResource
     private let isRequired: Bool
     private let characterLimit: Int?
     private let isMultiline: Bool
@@ -37,7 +37,7 @@ public struct BGField: View {
         text: Binding<String>,
         fieldState: Binding<BGFieldState>,
         fieldType: BGFieldType,
-        placeholder: String,
+        placeholder: LocalizedStringResource,
         isRequired: Bool = false,
         characterLimit: Int? = nil,
         isMultiline: Bool = false,
@@ -103,7 +103,7 @@ private extension BGField {
         case .email:
             BGEmailField(text: $text, placeholder: placeholder, config: config)
         case .date:
-            BGDateField(text: $text, placeholder: placeholder, onSubmit: {
+            BGDateField(text: $text, placeholder: placeholder, config: config, onSubmit: {
                 validate()
             })
         case .number:

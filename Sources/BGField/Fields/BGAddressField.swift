@@ -23,7 +23,8 @@ struct IdentifiableLocation: Identifiable {
 
 public struct BGAddressField: View {
     @Binding var text: String
-    var placeholder: String
+    var placeholder: LocalizedStringResource
+    var config: BGFieldConfig
     var onSubmit: (() -> Void)
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
@@ -34,7 +35,10 @@ public struct BGAddressField: View {
     public var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                TextField(placeholder, text: $text)
+                
+                TextField("",
+                          text: $text,
+                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
                     .textContentType(.fullStreetAddress)
                 
                 Image(systemName: "location.fill")

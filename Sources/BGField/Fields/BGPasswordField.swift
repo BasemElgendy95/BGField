@@ -13,8 +13,7 @@ public struct BGPasswordField: View {
     
     @State private var isSecure = true
     
-    var placeholder: String
-    
+    var placeholder: LocalizedStringResource    
     var config: BGFieldConfig
     
 

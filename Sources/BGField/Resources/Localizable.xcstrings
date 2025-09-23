@@ -2,7 +2,6 @@
   "sourceLanguage" : "en",
   "strings" : {
     "field_required" : {
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

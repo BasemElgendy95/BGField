@@ -9,8 +9,7 @@ import SwiftUI
 
 public struct BGNameField: View {
     @Binding var text: String
-    var placeholder: String
-
+    var placeholder: LocalizedStringResource
     var config: BGFieldConfig
 
     public var body: some View {

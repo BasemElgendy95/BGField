@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct BGMultilineTextField: View {
     @Binding var text: String
-    var placeholder: String
+    var placeholder: LocalizedStringResource
     var characterLimit: Int?
     var config: BGFieldConfig
     

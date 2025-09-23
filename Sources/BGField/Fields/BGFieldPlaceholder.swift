@@ -8,8 +8,7 @@ import SwiftUI
 
 public struct BGFieldPlaceholder: View {
     
-    var placeholder: String
-
+    var placeholder: LocalizedStringResource
     var config: BGFieldConfig
 
     public var body: some View {

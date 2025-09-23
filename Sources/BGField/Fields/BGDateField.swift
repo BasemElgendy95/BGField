@@ -11,15 +11,20 @@ import SwiftUI
 
 public struct BGDateField: View {
     @Binding var text: String
-    var placeholder: String
+    
+    var placeholder: LocalizedStringResource
+    var config: BGFieldConfig
     var onSubmit: (() -> Void)
+    
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
 
     public var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                TextField(placeholder, text: $text)
+                TextField("",
+                          text: $text,
+                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
                     .keyboardType(.numberPad)
                     .disabled(true)
 
