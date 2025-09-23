@@ -19,7 +19,7 @@ public struct BGPhoneWithCodeField: View {
             Text("🇪🇬+20")
             TextField("",
                       text: $text,
-                      prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+                      prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
             .keyboardType(.phonePad)
         }
     }

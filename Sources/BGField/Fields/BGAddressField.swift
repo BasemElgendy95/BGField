@@ -38,7 +38,7 @@ public struct BGAddressField: View {
                 
                 TextField("",
                           text: $text,
-                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
+                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
                     .textContentType(.fullStreetAddress)
                 
                 Image(systemName: "location.fill")

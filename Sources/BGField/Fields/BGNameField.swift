@@ -15,7 +15,7 @@ public struct BGNameField: View {
     public var body: some View {
         TextField("",
                   text: $text,
-                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
             .autocapitalization(.words)
     }
 }

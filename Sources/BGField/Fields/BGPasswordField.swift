@@ -25,12 +25,12 @@ public struct BGPasswordField: View {
                     if isSecure {
                         TextField("",
                                   text: $text,
-                                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+                                  prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
 
                     } else {
                         SecureField("",
                                     text: $text,
-                                    prompt: Text(placeholder).foregroundColor(config.text.placeholderColor))
+                                    prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
                     }
                 }
                 Button(action: {

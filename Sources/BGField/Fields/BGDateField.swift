@@ -24,7 +24,7 @@ public struct BGDateField: View {
             HStack {
                 TextField("",
                           text: $text,
-                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
+                          prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
                     .keyboardType(.numberPad)
                     .disabled(true)
 

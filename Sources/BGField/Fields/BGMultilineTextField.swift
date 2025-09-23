@@ -17,7 +17,7 @@ public struct BGMultilineTextField: View {
         VStack(alignment: .leading, spacing: 5) {
             TextField("",
                       text: $text,
-                      prompt: Text(placeholder).foregroundColor(config.text.placeholderColor), axis: .vertical)
+                      prompt: Text(placeholder).foregroundColor(config.text.placeholderColor).font(config.text.font))
                 .lineLimit(1...8)
             if let limit = characterLimit {
                 limitText(limit: limit)
